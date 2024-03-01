@@ -5,6 +5,7 @@ mod structures;
 
 ///// functions attaching
 use crate::functions::get_config_params::*;
+use crate::functions::native_get_repositories::*;
 use crate::functions::portus_delete_image::*;
 use crate::functions::portus_get_latest_images::*;
 use crate::functions::portus_get_tags_of_images::*;
@@ -50,8 +51,12 @@ fn main() {
             }
         }
     }
-    
+
     ///// docker registry native API
     if vec_config[3].eq("registry") {
+        let repo_list: Vec<String> = native_get_repositories(&vec_config[0], &vec_config[1], &vec_config[2]).unwrap();
+        for repo in repo_list.iter() {
+            println!("{}", &repo);
+        }
     }
 }
