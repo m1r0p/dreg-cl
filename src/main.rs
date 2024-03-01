@@ -29,6 +29,7 @@ fn main() {
 
     let vec_config: Vec<String> = get_config_params(config_path).unwrap();
 
+    ///// Portus API
     if vec_config[3].eq("portus") {
         let tag_list: Vec<Tag> =
             portus_get_tags_of_images(&vec_config[0], &vec_config[1], &vec_config[2]).unwrap();
@@ -48,5 +49,9 @@ fn main() {
                 _ = portus_delete_image(&vec_config[0], &vec_config[1], &vec_config[2], &tag.id);
             }
         }
+    }
+    
+    ///// docker registry native API
+    if vec_config[3].eq("registry") {
     }
 }
