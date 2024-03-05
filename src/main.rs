@@ -5,12 +5,13 @@ mod structures;
 
 ///// functions attaching
 use crate::functions::get_config_params::*;
+use crate::functions::native_delete_manifest::*;
+use crate::functions::native_get_digest::*;
 use crate::functions::native_get_repositories::*;
 use crate::functions::native_get_tags_of_images::*;
 use crate::functions::portus_delete_image::*;
 use crate::functions::portus_get_latest_images::*;
 use crate::functions::portus_get_tags_of_images::*;
-use crate::functions::native_get_digest::*;
 
 use std::env;
 //use std::collections::HashMap;
@@ -57,32 +58,48 @@ fn main() {
 
     ///// docker registry native API
     if vec_config[3].eq("registry") {
-        //let mut repo_tags: HashMap<String, Vec<String>> = HashMap::new();
         let mut latest_digest: Vec<String> = Vec::new();
         let repo_list: Vec<String> =
             native_get_repositories(&vec_config[0], &vec_config[1], &vec_config[2]).unwrap();
         for repo in repo_list.iter() {
-            let tags: Vec<String> = native_get_tags_of_images(&vec_config[0], &vec_config[1], &vec_config[2], &repo).unwrap();
-            //repo_tags.insert(repo.to_string(), tags);
+            let tags: Vec<String> =
+                native_get_tags_of_images(&vec_config[0], &vec_config[1], &vec_config[2], &repo)
+                    .unwrap();
             for tag in tags.iter() {
                 if tag.eq("latest") {
-                    let digest: String = native_get_digest(&vec_config[0], &vec_config[1], &vec_config[2], &repo, &tag).unwrap();
+                    let digest: String = native_get_digest(
+                        &vec_config[0],
+                        &vec_config[1],
+                        &vec_config[2],
+                        &repo,
+                        &tag,
+                    )
+                    .unwrap();
                     latest_digest.push(digest);
                 }
             }
             for tag in tags.iter() {
-                let digest: String = native_get_digest(&vec_config[0], &vec_config[1], &vec_config[2], &repo, &tag).unwrap();
+                let digest: String =
+                    native_get_digest(&vec_config[0], &vec_config[1], &vec_config[2], &repo, &tag)
+                        .unwrap();
                 if tag.ne("latest") && !latest_digest.contains(&digest) {
-                    println!("repo: {}, tag: {}, digest: {}", &repo, &tag, &digest);
+                    _ = native_delete_manifest(
+                        &vec_config[0],
+                        &vec_config[1],
+                        &vec_config[2],
+                        &repo,
+                        &digest,
+                    );
+                    println!("repo: {}, tag: {} - deleted", &repo, &tag);
                 }
+                //println!("repo: {}, tag: {}, digest: {}", &repo, &tag, &digest);
             }
         }
 
-        //let repo: String = String::from("tua/tua-app");
+        //let repo: String = String::from("megaspace1/ubuntu");
         //let tag: String = String::from("latest");
+        //let tags: Vec<String> = native_get_tags_of_images(&vec_config[0], &vec_config[1], &vec_config[2], &repo).unwrap();
         //let digest: String = native_get_digest(&vec_config[0], &vec_config[1], &vec_config[2], &repo, &tag).unwrap();
-        //println!("{}", &digest);
-
-        //println!("{:?}", &repo_tags);
+        //println!("{:?}", &tags);
     }
 }

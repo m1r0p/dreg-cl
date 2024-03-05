@@ -31,11 +31,22 @@ pub async fn native_get_tags_of_images(
         .await?;
     let raw_json: Value = serde_json::from_str(resp.as_str()).unwrap();
     let tags_obj_json: &Map<String, Value> = raw_json.as_object().unwrap();
-    let tags_raw: &Vec<Value> = tags_obj_json["tags"].as_array().unwrap();
-    for tag_raw in tags_raw.iter() {
-        let tag: String = serde_json::from_value(tag_raw.to_owned()).unwrap();
-        tag_list.push(tag);
+    //let tags_raw: &Vec<Value> = tags_obj_json["tags"].as_array().unwrap();
+    let opt_tags: Option<&Vec<Value>> = tags_obj_json["tags"].as_array();
+    match opt_tags {
+        None => println!("{} has no tags", &registry_repo),
+        Some(tags_raw) => {
+            for tag_raw in tags_raw.iter() {
+                let tag: String = serde_json::from_value(tag_raw.to_owned()).unwrap();
+                tag_list.push(tag);
+            }
+        }
     }
+    //println!("{:?}", &tags_raw);
+    //for tag_raw in tags_raw.iter() {
+    //    let tag: String = serde_json::from_value(tag_raw.to_owned()).unwrap();
+    //    tag_list.push(tag);
+    //}
 
     return Ok(tag_list);
 }
