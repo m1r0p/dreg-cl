@@ -10,9 +10,10 @@ use crate::functions::native_get_tags_of_images::*;
 use crate::functions::portus_delete_image::*;
 use crate::functions::portus_get_latest_images::*;
 use crate::functions::portus_get_tags_of_images::*;
+use crate::functions::native_get_digest::*;
 
 use std::env;
-use std::collections::HashMap;
+//use std::collections::HashMap;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -56,14 +57,32 @@ fn main() {
 
     ///// docker registry native API
     if vec_config[3].eq("registry") {
-        let mut repo_tags: HashMap<String, Vec<String>> = HashMap::new();
+        //let mut repo_tags: HashMap<String, Vec<String>> = HashMap::new();
+        let mut latest_digest: Vec<String> = Vec::new();
         let repo_list: Vec<String> =
             native_get_repositories(&vec_config[0], &vec_config[1], &vec_config[2]).unwrap();
         for repo in repo_list.iter() {
             let tags: Vec<String> = native_get_tags_of_images(&vec_config[0], &vec_config[1], &vec_config[2], &repo).unwrap();
-            repo_tags.insert(repo.to_string(), tags);
+            //repo_tags.insert(repo.to_string(), tags);
+            for tag in tags.iter() {
+                if tag.eq("latest") {
+                    let digest: String = native_get_digest(&vec_config[0], &vec_config[1], &vec_config[2], &repo, &tag).unwrap();
+                    latest_digest.push(digest);
+                }
+            }
+            for tag in tags.iter() {
+                let digest: String = native_get_digest(&vec_config[0], &vec_config[1], &vec_config[2], &repo, &tag).unwrap();
+                if tag.ne("latest") && !latest_digest.contains(&digest) {
+                    println!("repo: {}, tag: {}, digest: {}", &repo, &tag, &digest);
+                }
+            }
         }
 
-        println!("{:?}", &repo_tags);
+        //let repo: String = String::from("tua/tua-app");
+        //let tag: String = String::from("latest");
+        //let digest: String = native_get_digest(&vec_config[0], &vec_config[1], &vec_config[2], &repo, &tag).unwrap();
+        //println!("{}", &digest);
+
+        //println!("{:?}", &repo_tags);
     }
 }
