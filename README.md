@@ -1,5 +1,5 @@
 [![License](https://img.shields.io/badge/license-MIT-green)](https://choosealicense.com/licenses/mit/)
-[![Version](https://img.shields.io/badge/version-0.1.0-blue)]
+[![Version](https://img.shields.io/badge/version-0.1.0-blue)]()
 
 # This project for docker registry automation
 
