@@ -1,4 +1,4 @@
-![GitHub License](https://img.shields.io/github/license/m1r0p/dreg-cl)
+![License](https://img.shields.io/badge/license-MIT-green)
 
 # This project for docker registry automation
 
