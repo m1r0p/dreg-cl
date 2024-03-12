@@ -1,3 +1,5 @@
+![GitHub License](https://img.shields.io/github/license/m1r0p/dreg-cl)
+
 # This project for docker registry automation
 
 ## Installation
