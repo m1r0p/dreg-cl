@@ -1,4 +1,5 @@
 ![License](https://img.shields.io/badge/license-MIT-green)
+![Version](https://img.shields.io/badge/version-0.1.0-blue)
 
 # This project for docker registry automation
 
