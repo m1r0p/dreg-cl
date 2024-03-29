@@ -1,5 +1,4 @@
 mod conf;
-mod enums;
 mod functions;
 mod structures;
 
@@ -13,22 +12,18 @@ use crate::functions::portus_delete_image::*;
 use crate::functions::portus_get_latest_images::*;
 use crate::functions::portus_get_tags_of_images::*;
 
+///// external crates
 use std::env;
 //use std::collections::HashMap;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
     let mut config_path: String = String::new();
-    //let mut input_csv_path: String = String::new();
     let mut i: usize = 0;
     for word in args.iter() {
         if word.as_str().eq("--config") {
             config_path.push_str(args[i + 1].as_str());
         }
-        //if word.as_str().eq("--input_csv") {
-        //    input_csv_path.push_str(args[i + 1].as_str());
-        //}
-
         i = i + 1;
     }
 
@@ -92,14 +87,7 @@ fn main() {
                     );
                     println!("repo: {}, tag: {} - deleted", &repo, &tag);
                 }
-                //println!("repo: {}, tag: {}, digest: {}", &repo, &tag, &digest);
             }
         }
-
-        //let repo: String = String::from("megaspace1/ubuntu");
-        //let tag: String = String::from("latest");
-        //let tags: Vec<String> = native_get_tags_of_images(&vec_config[0], &vec_config[1], &vec_config[2], &repo).unwrap();
-        //let digest: String = native_get_digest(&vec_config[0], &vec_config[1], &vec_config[2], &repo, &tag).unwrap();
-        //println!("{:?}", &tags);
     }
 }
