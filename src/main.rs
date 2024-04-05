@@ -62,21 +62,30 @@ fn main() {
                     .unwrap();
             for tag in tags.iter() {
                 if tag.eq("latest") {
-                    let digest: String = native_get_digest(
+                    let digest: String = match native_get_digest(
                         &vec_config[0],
                         &vec_config[1],
                         &vec_config[2],
                         &repo,
                         &tag,
-                    )
-                    .unwrap();
+                    ) {
+                        Ok(digest) => digest,
+                        Err(_) => continue,
+                    };
                     latest_digest.push(digest);
                 }
             }
             for tag in tags.iter() {
-                let digest: String =
-                    native_get_digest(&vec_config[0], &vec_config[1], &vec_config[2], &repo, &tag)
-                        .unwrap();
+                let digest: String = match native_get_digest(
+                    &vec_config[0],
+                    &vec_config[1],
+                    &vec_config[2],
+                    &repo,
+                    &tag,
+                ) {
+                    Ok(digest) => digest,
+                    Err(_) => continue,
+                };
                 if tag.ne("latest") && !latest_digest.contains(&digest) {
                     _ = native_delete_manifest(
                         &vec_config[0],

@@ -2,7 +2,6 @@
 
 ///// external crates
 use reqwest::header::{HeaderMap, ACCEPT};
-use std::error::Error;
 
 #[tokio::main]
 pub async fn native_get_digest(
@@ -11,7 +10,7 @@ pub async fn native_get_digest(
     registry_password: &String,
     registry_repo: &String,
     registry_tag: &String,
-) -> Result<String, Box<dyn Error>> {
+) -> Result<String, String> {
     let mut headers = HeaderMap::new();
     headers.insert(
         ACCEPT,
@@ -30,15 +29,20 @@ pub async fn native_get_digest(
         .basic_auth(&registry_user, Some(&registry_password))
         .headers(headers.clone())
         .send()
-        .await?;
+        .await
+        .unwrap();
 
-    let digest: String = resp
-        .headers()
-        .get("Docker-Content-Digest")
-        .expect("Something wrong")
-        .to_str()
-        .unwrap()
-        .to_string();
-
-    return Ok(digest);
+    match &resp.status().as_u16() {
+        200 => {
+            let digest: String = resp
+                .headers()
+                .get("Docker-Content-Digest")
+                .unwrap()
+                .to_str()
+                .unwrap()
+                .to_string();
+            return Ok(digest);
+        }
+        _ => return Err(String::from("Digest not found")),
+    }
 }
