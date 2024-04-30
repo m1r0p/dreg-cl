@@ -90,13 +90,13 @@ fn main() {
                     Err(_) => continue,
                 };
                 if !VALID_TAG_LIST.contains(&tag.as_str()) && !valid_digests.contains(&digest) {
-                    //_ = native_delete_manifest(
-                    //    &vec_config[0],
-                    //    &vec_config[1],
-                    //    &vec_config[2],
-                    //    &repo,
-                    //    &digest,
-                    //);
+                    _ = native_delete_manifest(
+                        &vec_config[0],
+                        &vec_config[1],
+                        &vec_config[2],
+                        &repo,
+                        &digest,
+                    );
                     println!("repo: {}, tag: {} - deleted", &repo, &tag);
                 }
             }
