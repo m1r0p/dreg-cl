@@ -12,6 +12,9 @@ use crate::functions::portus_delete_image::*;
 use crate::functions::portus_get_latest_images::*;
 use crate::functions::portus_get_tags_of_images::*;
 
+///// local modules
+pub use crate::conf::VALID_TAG_LIST;
+
 ///// external crates
 use std::env;
 //use std::collections::HashMap;
@@ -53,7 +56,7 @@ fn main() {
 
     ///// docker registry native API
     if vec_config[3].eq("registry") {
-        let mut latest_digest: Vec<String> = Vec::new();
+        let mut valid_digests: Vec<String> = Vec::new();
         let repo_list: Vec<String> =
             native_get_repositories(&vec_config[0], &vec_config[1], &vec_config[2]).unwrap();
         for repo in repo_list.iter() {
@@ -61,7 +64,7 @@ fn main() {
                 native_get_tags_of_images(&vec_config[0], &vec_config[1], &vec_config[2], &repo)
                     .unwrap();
             for tag in tags.iter() {
-                if tag.eq("latest") {
+                if VALID_TAG_LIST.contains(&tag.as_str()) {
                     let digest: String = match native_get_digest(
                         &vec_config[0],
                         &vec_config[1],
@@ -72,7 +75,7 @@ fn main() {
                         Ok(digest) => digest,
                         Err(_) => continue,
                     };
-                    latest_digest.push(digest);
+                    valid_digests.push(digest);
                 }
             }
             for tag in tags.iter() {
@@ -86,14 +89,14 @@ fn main() {
                     Ok(digest) => digest,
                     Err(_) => continue,
                 };
-                if tag.ne("latest") && !latest_digest.contains(&digest) {
-                    _ = native_delete_manifest(
-                        &vec_config[0],
-                        &vec_config[1],
-                        &vec_config[2],
-                        &repo,
-                        &digest,
-                    );
+                if !VALID_TAG_LIST.contains(&tag.as_str()) && !valid_digests.contains(&digest) {
+                    //_ = native_delete_manifest(
+                    //    &vec_config[0],
+                    //    &vec_config[1],
+                    //    &vec_config[2],
+                    //    &repo,
+                    //    &digest,
+                    //);
                     println!("repo: {}, tag: {} - deleted", &repo, &tag);
                 }
             }
