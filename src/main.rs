@@ -19,8 +19,6 @@ pub use crate::conf::VALID_TAG_LIST;
 use std::env;
 //use std::collections::HashMap;
 
-///// test
-
 fn main() {
     let args: Vec<String> = env::args().collect();
     let mut config_path: String = String::new();
